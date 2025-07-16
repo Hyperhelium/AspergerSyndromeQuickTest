@@ -12,9 +12,13 @@ It combines elements from the AQ-28 and RAADS-R screening tools into a 40-questi
 
     Clear result explanations with supportive, non-clinical language
 
-    Clean responsive UI with progress tracking
+    Clean responsive UI with progress tracking 
 
     No data collection or backend — all responses are processed in-browser
+
+    ⚠️ Disclaimer
+
+This test is not a diagnostic tool. It is a personal reflection aid inspired by the AQ-28 and RAADS-R assessments to help users identify potential traits associated with Asperger Syndrome (Autism Level 1). It does not evaluate more severe forms of autism (Levels 2 or 3), nor should it replace professional medical advice, diagnosis, or treatment. If you or someone you know is experiencing significant difficulties or symptoms, consult a qualified specialist or explore resources like Autism Speaks.
 
 🛠️ Built With:
 
