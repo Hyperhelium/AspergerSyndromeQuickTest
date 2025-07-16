@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aspie Test - Questions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .question-container, .result-container {
+      background: #ffffff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      color: #6a4fc3;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option {
+      margin: 1rem 0;
+    }
+
+    .option label {
+      font-size: 1rem;
+      margin-left: 0.5rem;
+    }
+
+    .next-btn {
+      display: block;
+      margin: 2rem auto 0;
+      background-color: #6a4fc3;
+      color: white;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .next-btn:hover {
+      background-color: #5239a6;
+    }
+
+    .result-container {
+      display: none;
+      text-align: center;
+    }
+
+    .result-message {
+      font-size: 1.2rem;
+      color: #333;
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background-color: #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #6a4fc3;
+      width: 0%;
+      transition: width 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="question-container" id="questionSection">
+    <h2 id="question">Loading question...</h2>
+    <form id="options"></form>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="progress-bar">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <div class="result-container" id="resultSection">
+    <h2>Test Complete!</h2>
+    <div class="result-message" id="resultMessage"></div>
+  </div>
+
+  <script>
+    // Full list of 40 questions
+    const questions = [
+      { text: "I find it hard to make new friends." },
+      { text: "I tend to notice small sounds when others do not." },
+      { text: "I prefer to do things the same way over and over again." },
+      { text: "I usually notice car number plates or similar strings of information." },
+      { text: "I find it difficult to work out people’s intentions." },
+      { text: "I find it difficult to imagine what it would be like to be someone else." },
+      { text: "I am fascinated by dates." },
+      { text: "I find it difficult to do more than one thing at once." },
+      { text: "I find social situations challenging." },
+      { text: "I frequently find that I don't know how to keep a conversation going." },
+      { text: "I often miss social cues in conversation." },
+      { text: "I have interests that are unusual in their intensity or focus." },
+      { text: "Certain sounds or textures bother me intensely." },
+      { text: "When I talk, it isn’t always easy for others to understand me." },
+      { text: "I often find it difficult to understand other people's body language." },
+      { text: "I enjoy repeating certain behaviors multiple times a day." },
+      { text: "I am very sensitive to the way certain fabrics feel." },
+      { text: "I have trouble understanding figures of speech or sarcasm." },
+      { text: "I avoid eye contact whenever possible." },
+      { text: "I have trouble starting conversations." },
+      { text: "I get extremely focused on certain topics or hobbies." },
+      { text: "I feel overwhelmed in crowded places." },
+      { text: "I have difficulty understanding how others feel." },
+      { text: "People often misunderstand what I’m trying to say." },
+      { text: "I like to collect things in a very organized way." },
+      { text: "Bright lights or loud sounds easily overwhelm me." },
+      { text: "I sometimes say things that others think are rude, even though I don't mean them that way." },
+      { text: "I find group conversations very difficult to follow." },
+      { text: "I often prefer to do things alone rather than with others." },
+      { text: "I react strongly to smells others don’t seem to notice." },
+      { text: "I speak in a tone that others sometimes find unusual." },
+      { text: "I find it hard to understand how others expect me to behave." },
+      { text: "I can talk for hours about my favorite topic." },
+      { text: "I seek out sensory experiences, like touching different textures or making repetitive noises." },
+      { text: "I sometimes say inappropriate things without realizing it." },
+      { text: "I take longer than others to process spoken information." },
+      { text: "I dislike being touched unexpectedly." },
+      { text: "I avoid social gatherings whenever I can." },
+      { text: "I get anxious when I can’t follow my usual routine." },
+      { text: "I find metaphors confusing or strange." }
+    ];
+
+    const choices = [
+      "True always",
+      "True sometimes",
+      "Seldom True",
+      "Never true"
+    ];
+
+    let currentQuestion = 0;
+    let scores = [];
+
+    function updateProgressBar() {
+      const progress = ((currentQuestion) / questions.length) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').textContent = q.text;
+      const optionsForm = document.getElementById('options');
+      optionsForm.innerHTML = '';
+
+      choices.forEach((label, index) => {
+        const radioId = `opt${index}`;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'option';
+        wrapper.innerHTML = `
+          <input type="radio" name="response" id="${radioId}" value="${3 - index}" required>
+          <label for="${radioId}">${label}</label>
+        `;
+        optionsForm.appendChild(wrapper);
+      });
+
+      updateProgressBar();
+    }
+
+    function showResults(score) {
+      document.getElementById('questionSection').style.display = 'none';
+      document.getElementById('resultSection').style.display = 'block';
+      const message = document.getElementById('resultMessage');
+      let interpretation = '';
+
+      if (score <= 29) {
+        interpretation = "Not an Aspie! Your score suggests that you likely do not show relevant traits commonly associated with Asperger Syndrome or Autism Level 1. Everyone is unique, and you may simply process the world in a typical way.";
+      } else if (score <= 59) {
+        interpretation = "Your answers suggest that you may share some traits often associated with Asperger Syndrome. It may be worthwhile to explore more or speak with a professional if you’re curious.";
+      } else if (score <= 89) {
+        interpretation = "You seem to relate to several characteristics associated with Asperger Syndrome. Understanding these traits might help you navigate challenges and embrace your strengths.";
+      } else {
+        interpretation = "It seems you have strong Aspie characteristics! Your responses are consistent with Asperger Syndrome (Autism Level 1). You may benefit from expert advice, especially to improve your quality of life and connect with people who think like you.";
+      }
+
+      message.textContent = `Your score: ${score}\n\n${interpretation}`;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="response"]:checked');
+      if (!selected) {
+        alert("Please select an answer before proceeding.");
+        return;
+      }
+      const score = parseInt(selected.value);
+      scores.push(score);
+
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        renderQuestion();
+      } else {
+        const total = scores.reduce((a, b) => a + b, 0);
+        showResults(total);
+      }
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
